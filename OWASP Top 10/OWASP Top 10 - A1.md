@@ -32,6 +32,7 @@ Open Web Application Security Project 의 주요 프로젝트 중에 하나로, 
 - POST,PUT,DELETE API 요청에 대한 액세스 제어가 누락된 경우
 
 | 발생하는 이유?
+
 구성 오류, IDOR(Insecure Direcrt Object References)로 발생할 수 있는데, 이는 응용프로그램이 파일 또는 데이터베이스 레코드와 같은 리소스에 직접적인 참조를 노출시키는 경우이다. 또한 보안되지 않은 세션 관리로 인해 세션 관리에서의 결함으로 공격자가 사용자 세션을 탈취하는 경우 등 여러가지 이유로 발생 할 수 있다.
 
 | 예방 방법
