@@ -6,7 +6,6 @@ tryhackme/cyborg - easy
   - default nmap script
   - enabled host discovery
   - network service banner grabbing
-  - probing
 ```
 #모든 포트 정보 수집
 ┌──(kali㉿kali)-[~/tryhackme/cyborg]
