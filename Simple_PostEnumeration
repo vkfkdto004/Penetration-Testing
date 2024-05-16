@@ -1,0 +1,72 @@
+#!/bin/bash
+
+print_header() {
+    echo -e "\n======== $1 ========\n"
+}
+
+print_header "Hostname"
+hostname
+
+print_header "Host Version Info"
+cat /etc/os-release 2>/dev/null || echo "OS release not available"
+
+print_header "Host System Info"
+uname -a
+
+print_header "User Info"
+whoami
+
+print_header "User UID, GID"
+id
+
+print_header "All Users"
+cat /etc/passwd
+
+print_header "All Local Groups"
+cat /etc/group
+
+print_header "Layer 2 - Network ARP Table"
+arp -a 2>/dev/null || echo "ARP not found"
+
+print_header "Layer 3 - Network Interface & IP Address"
+ip a
+
+print_header "Routing Table"
+route -n
+
+print_header "Network Traffic"
+netstat -nao
+
+print_header "Process Info"
+ps faux
+
+print_header "Open Ports"
+ss -tlpn
+
+print_header "Open Sessions"
+netstat -tulpna
+
+print_header "Config & Log Files"
+find /etc -name "*.conf" 2>/dev/null
+find /var/log -name "*.log" 2>/dev/null
+
+print_header "Exec & SUID Files"
+find / -type f -perm 0777 2>/dev/null
+find / -type f -perm -4000 2>/dev/null
+
+print_header "Path Information"
+echo "Shell: $SHELL"
+echo "PATH: $PATH"
+
+print_header "Environment Variables"
+env
+
+print_header "Exported Variables"
+export -p
+
+print_header "Docker or Kubernetes"
+cat /proc/self/cgroup
+echo -e \
+
+ls -alh /.dockerenv 2>/dev/null || echo "Not running Docker"
+           
